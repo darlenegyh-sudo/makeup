@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>메이크업샵 이상형 월드컵</title>
+    <title>[가장 마음에 드는 메이크업을 골라주세요]</title>
     <style>
         body {
             font-family: 'Pretendard', -apple-system, sans-serif;
@@ -37,8 +37,12 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             border-radius: 16px;
             overflow: hidden;
-            background: #fff;
+            /* 여백이 생길 때 자연스럽게 배경과 어우러지도록 배경색 맞춤 */
+            background: #F9F8F6; 
             box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .item:hover {
             transform: translateY(-5px);
@@ -46,13 +50,13 @@
         }
         .item img {
             width: 100%;
-            height: 60vh;
-            object-fit: cover;
+            height: 65vh;
+            /* 🌟 머리카락 잘림 방지: 원본 비율을 유지하며 상자 안에 쏙 들어가게 함 */
+            object-fit: contain; 
         }
+        /* 🌟 선택 중에는 샵 이름 숨기기 */
         .item .name {
-            padding: 20px;
-            font-size: 1.5rem;
-            font-weight: 700;
+            display: none; 
         }
         #result {
             display: none;
@@ -92,14 +96,14 @@
         }
         @media (max-width: 600px) {
             .container { flex-direction: column; gap: 10px; }
-            .item img { height: 35vh; }
+            .item img { height: 40vh; }
             .vs-text { font-size: 1.5rem; margin: 5px 0; }
         }
     </style>
 </head>
 <body>
 
-    <h1>메이크업샵 이상형 월드컵</h1>
+    <h1>[가장 마음에 드는 메이크업을 골라주세요]</h1>
     <div id="round-info">준비 중...</div>
 
     <div id="game" class="container">
@@ -149,12 +153,10 @@
         let nextRound = [];
         let currentIndex = 0;
 
-        // 배열을 랜덤으로 섞는 함수
         function shuffle(array) {
             return array.sort(() => Math.random() - 0.5);
         }
 
-        // 게임 시작: 20개 모두 참여
         function initGame() {
             currentRound = shuffle([...data]); 
             updateRoundText();
@@ -166,14 +168,12 @@
             if (currentRound.length === 2) {
                 roundInfo.innerText = "🏆 결승전 🏆";
             } else {
-                // 매치 수 계산 (홀수일 경우 부전승 제외한 매치 수)
                 let totalMatches = Math.floor(currentRound.length / 2);
                 let currentMatch = (currentIndex / 2) + 1;
                 roundInfo.innerText = `${currentRound.length}강 (${currentMatch}/${totalMatches})`;
             }
         }
 
-        // 화면에 두 개의 옵션 표시
         function showMatch() {
             document.getElementById("left-img").src = currentRound[currentIndex].img;
             document.getElementById("left-name").innerText = currentRound[currentIndex].name;
@@ -182,25 +182,20 @@
             document.getElementById("right-name").innerText = currentRound[currentIndex + 1].name;
         }
 
-        // 선택했을 때의 로직
         function select(choice) {
-            // 선택된 항목을 다음 라운드 배열에 추가
             nextRound.push(currentRound[currentIndex + choice]);
-            currentIndex += 2; // 다음 매치로 이동
+            currentIndex += 2; 
 
-            // 🌟 부전승 로직: 홀수 개라서 마지막 1개가 남았을 경우 자동 통과
             if (currentIndex === currentRound.length - 1) {
                 nextRound.push(currentRound[currentIndex]);
                 currentIndex++; 
             }
 
-            // 현재 라운드의 모든 매치가 끝났는지 확인
             if (currentIndex >= currentRound.length) {
                 currentRound = nextRound;
                 nextRound = [];
                 currentIndex = 0;
 
-                // 최종 우승자가 결정된 경우
                 if (currentRound.length === 1) {
                     showResult();
                     return;
@@ -210,7 +205,6 @@
             showMatch();
         }
 
-        // 결과 화면 표시
         function showResult() {
             document.getElementById("game").style.display = "none";
             document.getElementById("round-info").style.display = "none";
